@@ -1,0 +1,31 @@
+description: Search for a given article in articles that you've commented on.
+tags:
+  - Search
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: true
+    name: 'author id'
+    type: 'string'
+  - name: query
+    description: The body should contain the search string
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "query"
+      properties:
+        query:
+          type: "text"
+          example: "Flask for beginners"
+responses:
+  200:
+    description: When articles are found.
+
+  400:
+    description: Fails to find articles due to bad request data

@@ -1,0 +1,35 @@
+description: Search for a given article in articles with given tags.
+tags:
+  - Search
+produces:
+  - "application/json"
+security:
+  - APIKeyHeader: [ 'Authorization' ]
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: true
+    name: 'author id'
+    type: 'string'
+  - name: query
+    description: The body should contain the search string
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "query"
+        - "tags"
+      properties:
+        query:
+          type: "text"
+          example: "Flask for beginners"
+        tags:
+          type: "list"
+          example: ['health', 'lifestyle', 'life']
+responses:
+  200:
+    description: When articles are found.
+
+  400:
+    description: Fails to find articles due to bad request data
