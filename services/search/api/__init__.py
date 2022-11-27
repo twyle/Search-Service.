@@ -21,11 +21,11 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     app = Flask(__name__)
 
     app.config.from_object(Config[config_name])
-    # try:
-    #     check_configuration()
-    # except ValueError as e:
-    #     app_logger.critical(str(e))
-    #     sys.exit(1)
+    try:
+        check_configuration()
+    except ValueError as e:
+        app_logger.critical(str(e))
+        sys.exit(1)
 
     register_error_handlers(app)
     app_logger.info("Registered the error handlers!")

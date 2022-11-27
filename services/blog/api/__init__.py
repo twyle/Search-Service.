@@ -57,6 +57,7 @@ def create_app(config_name=os.environ.get("FLASK_ENV", "development")):
     @app.teardown_request
     def log_exception(exc):
         get_exception(exc)
+        
 
     register_extensions(app)
     app_logger.info("Registered the extensions!")

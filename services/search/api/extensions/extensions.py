@@ -3,12 +3,18 @@ from flasgger import LazyString, Swagger
 from flask import request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from elasticsearch import Elasticsearch
+import os
 
 
 load_dotenv()
 
 cors = CORS()
 jwt = JWTManager()
+ES_HOST = os.environ["ES_HOST"]
+ES_PORT = os.environ['ES_PORT']
+
+es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
 
 swagger_template = {
     "swagger": "2.0",

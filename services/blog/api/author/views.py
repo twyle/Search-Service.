@@ -18,9 +18,19 @@ from .controller.author import (
     handle_log_in_author,
     handle_refresh_token,
     handle_update_author,
+    handle_verify_author
 )
 
 author = Blueprint("author", __name__)
+
+
+@author.route('/verify_author')
+@swag_from(
+    "./docs/verify_author.yml", endpoint="author.verify_author", methods=["GET"]
+)
+def verify_author():
+    """Verify an author"""
+    return handle_verify_author(request.args.get("id"))
 
 
 @author.route("/", methods=["POST"])

@@ -11,9 +11,29 @@ from ...helpers.http_status_codes import (
     HTTP_201_CREATED,
     HTTP_404_NOT_FOUND,
     HTTP_409_CONFLICT,
+    HTTP_400_BAD_REQUEST
 )
 from ..models.author import Author, author_schema, authors_schema
 from .helper import validate_author_data
+
+
+def verify_author(author_id: str):
+    """Varify that an author exists"""
+    if not author_id:
+        raise ValueError('The author id has to be provided')
+    if not isinstance(author_id, str):
+        raise TypeError('The author id has to b a string')
+    return Author.user_with_id_exists(int(author_id))
+
+
+def handle_verify_author(author_id: str):
+    """Verifuy that an author exists"""
+    try:
+        author_exists = verify_author(author_id)
+    except (ValueError, TypeError, AuthorDoesNotExist) as e:
+        return jsonify({'error': str(e)}), HTTP_400_BAD_REQUEST
+    else:
+        return jsonify({'author exists': author_exists}), HTTP_200_OK
 
 
 def create_author(author_data: dict):

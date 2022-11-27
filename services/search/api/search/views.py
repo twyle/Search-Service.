@@ -2,6 +2,9 @@
 """This module contains all the author routes."""
 from flasgger import swag_from
 from flask import Blueprint, request, jsonify
+from .controller import (
+    handle_search_all_articles
+)
 
 search = Blueprint("search", __name__)
 
@@ -21,8 +24,7 @@ def search_own_articles():
 )
 def search_all_articles():
     """Register an author."""
-    # return handle_search_all_articles(request.args.get("id"), request.json)
-    return jsonify({'success': 'serach all articles'})
+    return handle_search_all_articles(request.args.get("author id"), request.json)
 
 
 @search.route("/search_articles_read", methods=["POST"])

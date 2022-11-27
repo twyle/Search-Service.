@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - postgres_blog:/var/lib/postgresql/data/
+    env_file:
+      - ./services/database/.env
+    ports:
+      - 5432:5432 
+
+  blog:
+    build:
+      context: ./services/blog
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 5000:5000
+    env_file:
+      - ./services/blog/.env
+    depends_on:
+      - db
+      - redis
+
+  celery-worker:
+    build:
+      context: ./services/blog
+      dockerfile: Dockerfile.dev
+    command: celery --app manage.celery worker --loglevel=info
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - ./services/blog/.env
+    depends_on:
+      - blog
+      - redis
+
+  search:
+    build:
+      context: ./services/search
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 5001:5000
+    env_file:
+      - ./services/search/.env
+
+  redis:
+    image: redis:6-alpine
+
+volumes:
+  postgres_blog:

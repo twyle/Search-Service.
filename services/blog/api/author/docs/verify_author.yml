@@ -1,0 +1,19 @@
+description: Verify if the author exists
+tags:
+  - Author
+produces:
+  - "application/json"
+parameters:
+  - in: query
+    description: The query should contain the author id
+    required: true
+    name: 'id'
+    type: 'string'
+get:
+  description: Verify if the author exists
+responses:
+  200:
+    description: When all authors are successfully obtained.
+
+  400:
+    description: Fails to list all authors due to bad request data
