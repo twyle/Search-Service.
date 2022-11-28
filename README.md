@@ -226,10 +226,13 @@ Here is how to set up the application locally:
 
         This service uses Postgres to store the user info, AWS S3 to store the images, AWS SES to send the emails and celery for the email sending and photo upload.
 
-      2. Search Service 
+      2. Blog Service 
+        
+        This services enables the creation, update, deletion and viewing of articles. The routes include:
+
         | Route                   | Method  | Description                 |
         | ------------------------| ------- |---------------------------- |
-        | 'api/v1/search/search'           | POST | Search for an article among authors articles              |
+        | 'api/v1/author'           | DELETE  | Delete a author.              |
 
   2. **Database**
 
