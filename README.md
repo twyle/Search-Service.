@@ -228,11 +228,19 @@ Here is how to set up the application locally:
 
       2. Blog Service 
         
-        This services enables the creation, update, deletion and viewing of articles. The routes include:
+        This services enables the user to search for articles:
 
         | Route                   | Method  | Description                 |
         | ------------------------| ------- |---------------------------- |
-        | 'api/v1/author'           | DELETE  | Delete a author.              |
+        | 'api/v1/search/search'           | POST  | Search for a given article in your own articles.|
+        | 'api/v1/search/search_all_articles'           | POST  | Search for a given article in all the articles.|
+        | 'api/v1/search/search_articles_author_followers'           | POST  | Search for a given article in articles written by authors who follow you.|
+        | 'api/v1/search/search_articles_author_follows'           | POST  | Search for a given article in articles written by authors you follow.|
+        | 'api/v1/search/search_articles_bookmarked'           | POST  | Search for a given article in articles that you've bookmarked.|
+        | 'api/v1/search/search_articles_commented'           | POST  | Search for a given article in articles that you've commented on.|
+        | 'api/v1/search/search_articles_liked'           | POST  | Search for a given article in articles that you've liked.|
+        | 'api/v1/search/search_articles_read'           | POST  | Search for a given article in articles that you've read.|
+        | 'api/v1//search/search_articles_with_tags'           | POST  | Search for a given article in articles with given tags.|
 
   2. **Database**
 
