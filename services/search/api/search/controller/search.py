@@ -5,12 +5,13 @@ from ...helpers.http_status_codes import (
 from flask import jsonify
 from ..queries.all_cars import all_cars
 import requests
+import os
 
 
 def verify_author(author_id: str):
     """Verify that the author exists"""
     params = {'id': author_id}
-    blog_service_url = 'http://0.0.0.0:5000/author/verify_author'
+    blog_service_url = f'{os.environ["BLOG_HOST"]}/author/verify_author'
     res = requests.get(blog_service_url, params=params)
     return res.json()['author exists']
 

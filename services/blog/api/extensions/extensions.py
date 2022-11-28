@@ -10,6 +10,7 @@ from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
+from elasticsearch import Elasticsearch
 
 
 load_dotenv()
@@ -19,6 +20,10 @@ migrate = Migrate()
 ma = Marshmallow()
 cors = CORS()
 jwt = JWTManager()
+
+ES_HOST = os.environ["ES_HOST"]
+ES_PORT = os.environ['ES_PORT']
+es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
 
 s3 = boto3.client(
     "s3",

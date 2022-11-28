@@ -8,6 +8,7 @@ from elastic_transport import ConnectionError
 
 from ..extensions import cors, jwt, swagger
 from ..config.logger import app_logger
+import requests
 
 
 def register_extensions(app):
@@ -74,6 +75,16 @@ def check_if_database_exists(db_connection_string: str) -> bool:
     else:
         app_logger.info(f"Connected to ElasticSearch cluster `{es.info().body['cluster_name']}`")
         return True
+    
+    
+def blog_service_up():
+    """Ceh ifblog service is up""" 
+    try:
+        res = requests.get(f'{os.environ["BLOG_HOST"]}/')
+    except Exception:
+        raise ValueError('Unable to connect to the blog service')
+    else:
+        return res.ok
 
 
 def check_configuration():
@@ -81,3 +92,5 @@ def check_configuration():
     # Check database connection
     if not check_if_database_exists(create_db_conn_string()):
         raise ValueError("The database is not connected!")
+    if not blog_service_up():
+        raise ValueError('The blog service is not running!')

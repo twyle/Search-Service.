@@ -17,7 +17,7 @@ class Article(db.Model):
 
     id: int = db.Column(db.Integer, primary_key=True)
     author_id: int = db.Column(db.Integer, db.ForeignKey("authors.id"))
-    title: str = db.Column(db.String(100), nullable=False)
+    title: str = db.Column(db.Text, nullable=False)
     text: str = db.Column(db.Text, nullable=False)
     image: str = db.Column(db.String(100), nullable=True)
     date_published: datetime = db.Column(db.DateTime, default=datetime.utcnow)
@@ -90,8 +90,18 @@ class ArticleSchema(ma.Schema):
     class Meta:
         """The fields to display."""
 
-        fields = ("id", "title", "text", "image", "date_published", "tags")
+        fields = ("id", "author_id", "title", "text", "image", "date_published", "date_edited", "tags")
+        
+
+class ESSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = ("id", "author_id", "title", "text", "date_published", "date_edited", "tags")
 
 
 article_schema = ArticleSchema()
 articles_schema = ArticleSchema(many=True)
+es_schema = ESSchema()

@@ -1,5 +1,5 @@
 import logging.config
-import logstash
+import logstash 
 import os
 
 from dotenv import load_dotenv
