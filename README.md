@@ -20,7 +20,7 @@
   <img title="Bandit badge" alt="Bandit badge" src="https://img.shields.io/badge/gunicorn-%298729.svg?style=flat&logo=gunicorn&logoColor=white" />
 </p>
 
-<img src="assets/images/medium_clone_blog_service.png" class="img-responsive" alt="">
+<img src="assets/images/search_service.png" class="img-responsive" alt="">
 
 ## Project Overview
 This application consists of two microservices:
