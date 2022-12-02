@@ -127,3 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+services/blog/api/helpers/data/*.json
