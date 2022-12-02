@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-
+import json
 from ...extensions import db, ma
 
 
@@ -24,6 +24,13 @@ class Comment(db.Model):
         if Comment.query.filter_by(id=comment_id).first():
             return True
         return False
+    
+    def __repr__(self) -> str:
+        data = json.dumps({
+            'author_id': self.author_id,
+            'date': str(self.date)
+        })
+        return data
 
 
 class CommentSchema(ma.Schema):
@@ -38,6 +45,18 @@ class CommentSchema(ma.Schema):
             "comment",
             "date",
         )
+        
+
+class ESCommentSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = ("author.name", "date", "comment")
+        
+es_comment_schema = ESCommentSchema()
+es_comments_schema = ESCommentSchema(many=True)
 
 
 comment_schema = CommentSchema()

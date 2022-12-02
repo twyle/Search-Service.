@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-
+import json
 from ...extensions import db, ma
 
 
@@ -17,20 +17,38 @@ class Bookmark(db.Model):
 
     author = db.relationship("Author", backref="bookmarks")
     article = db.relationship("Article", backref="bookmarks")
+    
+    def __repr__(self) -> str:
+        data = json.dumps({
+            'author_id': self.author_id,
+            'date': str(self.date)
+        })
+        return data
 
 
-class BookmarkSchema(ma.Schema):
+class ArticleBookmarkSchema(ma.Schema):
     """Show all the article information."""
 
     class Meta:
         """The fields to display."""
 
         fields = (
-            "author_id",
-            "author_id",
+            "author",
             "date",
         )
+        
+        
+class AuthorBookmarkSchema(ma.Schema):
+    """Show all the article information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = ("article", "date")
+        
+author_bookmark_schema = AuthorBookmarkSchema()
+author_bookmarks_schema = AuthorBookmarkSchema(many=True)
 
 
-bookmark_schema = BookmarkSchema()
-bookmarks_schema = BookmarkSchema(many=True)
+article_bookmark_schema = ArticleBookmarkSchema()
+article_bookmarks_schema = ArticleBookmarkSchema(many=True)

@@ -9,7 +9,7 @@ load_dotenv()
 class BaseConfig:
     """Base configuration."""
 
-    DEBUG = True
+    DEBUG = True 
     TESTING = False
     SECRET_KEY = os.environ.get("SECRET_KEY", "secret-key")
 
@@ -25,6 +25,15 @@ class BaseConfig:
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(
         days=int(os.getenv("JWT_REFRESH_TOKEN_EXPIRES", "7"))
     )
+    
+    POSTGRES_HOST = os.environ["POSTGRES_HOST"]
+    POSTGRES_DB = os.environ["POSTGRES_DB"]
+    POSTGRES_PORT = os.environ["POSTGRES_PORT"]
+    POSTGRES_USER = os.environ["POSTGRES_USER"]
+    POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+
+    db_conn_string = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    SQLALCHEMY_DATABASE_URI = db_conn_string
 
 
 class DevelopmentConfig(BaseConfig):

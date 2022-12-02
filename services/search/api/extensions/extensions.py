@@ -5,12 +5,16 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from elasticsearch import Elasticsearch
 import os
+from flask_marshmallow import Marshmallow
+from flask_sqlalchemy import SQLAlchemy
 
 
 load_dotenv()
 
 cors = CORS()
 jwt = JWTManager()
+db = SQLAlchemy()
+ma = Marshmallow()
 ES_HOST = os.environ["ES_HOST"]
 ES_PORT = os.environ['ES_PORT']
 

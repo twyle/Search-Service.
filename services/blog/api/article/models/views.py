@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from ...extensions import db
+from ...extensions import db, ma
 
 
 @dataclass
@@ -16,3 +16,27 @@ class View(db.Model):
 
     author = db.relationship("Author", backref="views")
     article = db.relationship("Article", backref="views")
+    
+
+class AuthorViewSchema(ma.Schema):
+    """Show all the view information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = ("article", "date")
+        
+
+class ArticleViewSchema(ma.Schema):
+    """Show all the view information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = ("author", "date")
+        
+author_view_schema = AuthorViewSchema()
+authors_views_schema = AuthorViewSchema(many=True)
+
+article_view_schema = ArticleViewSchema()
+articles_views_schema = ArticleViewSchema(many=True)

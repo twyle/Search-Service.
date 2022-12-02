@@ -6,7 +6,7 @@ from ..search.views import search
 from elasticsearch import Elasticsearch
 from elastic_transport import ConnectionError
 
-from ..extensions import cors, jwt, swagger
+from ..extensions import cors, jwt, swagger, db, ma
 from ..config.logger import app_logger
 import requests
 
@@ -17,6 +17,8 @@ def register_extensions(app):
     cors.init_app(app)
     swagger.init_app(app)
     jwt.init_app(app)
+    db.init_app(app)
+    ma.init_app(app)
 
 
 def register_blueprints(app):

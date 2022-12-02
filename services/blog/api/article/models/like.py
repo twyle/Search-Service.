@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-
+import json
 from ...extensions import db, ma
 
 
@@ -18,18 +18,32 @@ class Like(db.Model):
     article = db.relationship("Article", backref="likes")
 
 
-class LikeSchema(ma.Schema):
-    """Show all the article information."""
+class AuthorLikeSchema(ma.Schema):
+    """Show all the like information."""
 
     class Meta:
         """The fields to display."""
 
         fields = (
-            "author_id",
-            "author_id",
-            "date",
+            "article",
+            "date"
+        )
+        
+
+class ArticleLikeSchema(ma.Schema):
+    """Show all the like information."""
+
+    class Meta:
+        """The fields to display."""
+
+        fields = (
+            "author",
+            "date"
         )
 
 
-like_schema = LikeSchema()
-likes_schema = LikeSchema(many=True)
+author_like_schema = AuthorLikeSchema()
+author_likes_schema = AuthorLikeSchema(many=True)
+
+article_like_schema = ArticleLikeSchema()
+article_likes_schema = ArticleLikeSchema(many=True)

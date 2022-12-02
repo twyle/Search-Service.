@@ -14,6 +14,8 @@ from ...helpers.http_status_codes import (
     HTTP_400_BAD_REQUEST
 )
 from ..models.author import Author, author_schema, authors_schema
+from ...article.models.bookmark import author_bookmarks_schema, Bookmark
+from ...article.models.like import Like, author_likes_schema
 from .helper import validate_author_data
 
 
@@ -244,7 +246,7 @@ def articles_bookmarked(author_id: str):
         raise TypeError("The author id has to be a string")
     if not Author.user_with_id_exists(int(author_id)):
         raise ValueError(f"Their is no author with id {author_id}")
-    return Author.query.filter_by(id=author_id).first().bookmarks, 200
+    return author_bookmarks_schema.dump(Bookmark.query.filter_by(author_id=int(author_id)).all()), 200
 
 
 def handle_articles_bookmarked(author_id: str):
@@ -297,7 +299,7 @@ def articles_liked(author_id: str):
         raise TypeError("The author id has to be a string")
     if not Author.user_with_id_exists(int(author_id)):
         raise ValueError(f"Their is no author with id {author_id}")
-    return Author.query.filter_by(id=author_id).first().likes, 200
+    return author_likes_schema.dump(Like.query.filter_by(author_id=author_id).all()), 200
 
 
 def handle_articles_liked(author_id: str):
@@ -318,7 +320,7 @@ def articles_viewed(author_id: str):
         raise TypeError("The author id has to be a string")
     if not Author.user_with_id_exists(int(author_id)):
         raise ValueError(f"Their is no author with id {author_id}")
-    return Author.query.filter_by(id=author_id).first().views, 200
+    return  author_bookmarks_schema.dump(Bookmark.query.filter_by(author_id=author_id).all()), 200
 
 
 def handle_articles_viewed(author_id: str):

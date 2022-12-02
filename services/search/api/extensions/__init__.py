@@ -1,3 +1,3 @@
-from .extensions import cors, jwt, swagger
+from .extensions import cors, jwt, swagger, db, ma
 
-__all__ = ["cors", "swagger", "jwt"]
+__all__ = ["cors", "swagger", "jwt", "db", "ma"]

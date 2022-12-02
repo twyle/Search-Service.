@@ -7,10 +7,10 @@ from sqlalchemy.exc import NoForeignKeysError
 from ...author.models.author import Author
 from ...extensions import db
 from ..models.article import Article, article_schema, articles_schema
-from ..models.bookmark import Bookmark, bookmark_schema
+from ..models.bookmark import Bookmark, article_bookmarks_schema
 from ..models.comment import Comment, comment_schema
-from ..models.like import Like, like_schema
-from ..models.views import View
+from ..models.like import Like, article_likes_schema
+from ..models.views import View, articles_views_schema
 from .helpers import handle_upload_image, validate_article_data
 from ...tasks import delete_file_s3
 
@@ -30,6 +30,7 @@ def create_article(id: str, article_data: dict, article_image):
         title=article_data["Title"],
         text=article_data["Text"],
         author=Author.get_user(int(id)),
+        tag=article_data['Tag']
     )
 
     if article_image:
@@ -224,14 +225,14 @@ def handle_comments(article_id: str, author_id: str):
 
 
 def likes(article_id: str):
-    """Delete an author."""
+    """Delete an author."""    
     if not article_id:
         raise ValueError("The article id has to be provided")
     if not isinstance(article_id, str):
         raise TypeError("The article id has to be a string")
     if not Article.article_with_id_exists(int(article_id)):
         raise ValueError(f"Their is no article with id {article_id}")
-    return Article.query.filter_by(id=article_id).first().likes, 200
+    return article_likes_schema.dump(Like.query.filter_by(article_id=article_id).all()), 200
 
 
 def handle_likes(article_id: str):
@@ -252,7 +253,7 @@ def bookmarks(article_id: str):
         raise TypeError("The article id has to be a string")
     if not Article.article_with_id_exists(int(article_id)):
         raise ValueError(f"Their is no article with id {article_id}")
-    return Article.query.filter_by(id=article_id).first().bookmarks, 200
+    return article_bookmarks_schema.dump(Bookmark.query.filter_by(article_id=int(article_id)).all()), 200
 
 
 def handle_bookmarks(article_id: str):
@@ -263,30 +264,6 @@ def handle_bookmarks(article_id: str):
         return jsonify({"error": str(e)}), 400
     else:
         return article_bookmarks
-
-
-def tags(article_id: str):
-    """Delete an author."""
-    if not article_id:
-        raise ValueError("The article id has to be provided")
-    if not isinstance(article_id, str):
-        raise TypeError("The article id has to be a string")
-    if not Article.article_with_id_exists(int(article_id)):
-        raise ValueError(f"Their is no article with id {article_id}")
-    return (
-        jsonify({"Article tags": Article.query.filter_by(id=article_id).first().tags}),
-        200,
-    )
-
-
-def handle_tags(article_id: str):
-    """Handle the get request for articles published."""
-    try:
-        article_tags = tags(article_id)
-    except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
-    else:
-        return article_tags
 
 
 def views(article_id: str, author_id: str):
@@ -302,13 +279,8 @@ def views(article_id: str, author_id: str):
             raise TypeError("The author id has to be a string")
         if not Author.user_with_id_exists(int(author_id)):
             raise ValueError(f"Their is no author with id {author_id}")
-        views = Article.query.filter_by(id=article_id).first().views
-        art_views = []
-        for view in views:
-            if views.author.id == int(author_id):
-                art_views.append(view)
-        return art_views
-    return Article.query.filter_by(id=article_id).first().views, 200
+        return articles_views_schema.dump(View.query.filter(View.author_id==int(author_id), View.article_id==int(article_id)).all())
+    return articles_views_schema.dump(View.query.filter_by(article_id=int(article_id)).all()), 200
 
 
 def handle_views(article_id: str, author_id: str):
@@ -482,86 +454,6 @@ def handle_unlike(article_id: str, author_id: str):
         return jsonify({"error": str(e)}), 400
     else:
         return article_like
-
-
-def tag_article(article_id: str, author_id: str, tag: str):
-    """Delete an author."""
-    if not article_id:
-        raise ValueError("The article id has to be provided")
-    if not tag:
-        raise ValueError("The tag has to be provided!")
-    if not isinstance(tag, str):
-        raise TypeError("The tag has to be a string!")
-    if not isinstance(article_id, str):
-        raise TypeError("The article id has to be a string")
-    if not Article.article_with_id_exists(int(article_id)):
-        raise ValueError(f"Their is no article with id {article_id}")
-    if not isinstance(author_id, str):
-        raise TypeError("The author id has to be a string")
-    if not Author.user_with_id_exists(int(author_id)):
-        raise ValueError(f"Their is no author with id {author_id}")
-    if not Article.get_article(int(article_id)).author_id != int(author_id):
-        raise ValueError("You can only tag your articles!")
-    if tag in Article.get_article(int(article_id)).tags:
-        raise ValueError(f"The article is already tagged as {tag}")
-    article = Article.get_article(int(article_id))
-
-    tags = article.tags.copy()
-    tags.append(tag)
-    article.tags = tags.copy()
-    db.session.add(article)
-    db.session.commit()
-    return jsonify({"article tags": Article.get_article(int(article_id)).tags}), 200
-
-
-def handle_tag(article_id: str, author_id: str, tag: str):
-    """Handle the get request for articles published."""
-    try:
-        article_tag = tag_article(article_id, author_id, tag)
-    except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
-    else:
-        return article_tag
-
-
-def untag_article(article_id: str, author_id: str, tag: str):
-    """Delete an author."""
-    if not article_id:
-        raise ValueError("The article id has to be provided")
-    if not tag:
-        raise ValueError("The tag has to be provided!")
-    if not isinstance(tag, str):
-        raise TypeError("The tag has to be a string!")
-    if not isinstance(article_id, str):
-        raise TypeError("The article id has to be a string")
-    if not Article.article_with_id_exists(int(article_id)):
-        raise ValueError(f"Their is no article with id {article_id}")
-    if not isinstance(author_id, str):
-        raise TypeError("The author id has to be a string")
-    if not Author.user_with_id_exists(int(author_id)):
-        raise ValueError(f"Their is no author with id {author_id}")
-    if not Article.get_article(int(article_id)).author_id != int(author_id):
-        raise ValueError("You can only untag your articles!")
-    if tag not in Article.get_article(int(article_id)).tags:
-        raise ValueError(f"The article is not tagged as {tag}")
-    article = Article.get_article(int(article_id))
-
-    tags = article.tags.copy()
-    tags.remove(tag)
-    article.tags = tags.copy()
-    db.session.add(article)
-    db.session.commit()
-    return jsonify({"article tags": Article.get_article(int(article_id)).tags}), 200
-
-
-def handle_untag(article_id: str, author_id: str, tag: str):
-    """Handle the get request for articles published."""
-    try:
-        article_tag = untag_article(article_id, author_id, tag)
-    except (ValueError, TypeError) as e:
-        return jsonify({"error": str(e)}), 400
-    else:
-        return article_tag
 
 
 def comment_article(article_id: str, author_id: str, comment_data: dict):

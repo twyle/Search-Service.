@@ -16,12 +16,9 @@ from .controller.article import (
     handle_like,
     handle_likes,
     handle_list_articles,
-    handle_tag,
-    handle_tags,
     handle_unbookmark,
     handle_uncomment,
     handle_unlike,
-    handle_untag,
     handle_update_article,
     handle_views,
 )
@@ -106,14 +103,6 @@ def get_bookmarks():
     return handle_bookmarks(request.args.get("id"))
 
 
-@article.route("/tags", methods=["GET"])
-@jwt_required()
-@swag_from("./docs/tags.yml", endpoint="article.get_tags", methods=["GET"])
-def get_tags():
-    """List article tags."""
-    return handle_tags(request.args.get("id"))
-
-
 @article.route("/articles_views", methods=["GET"])
 @jwt_required()
 @swag_from("./docs/views.yml", endpoint="article.get_articles_views", methods=["GET"])
@@ -166,30 +155,6 @@ def like_article():
 def unlike_article():
     """Unlike an article."""
     return handle_unlike(request.args.get("article id"), request.args.get("author id"))
-
-
-@article.route("/tag", methods=["GET"])
-@jwt_required()
-@swag_from("./docs/tag.yml", endpoint="article.tag_article", methods=["GET"])
-def tag_article():
-    """Tag an article."""
-    return handle_tag(
-        request.args.get("article id"),
-        request.args.get("author id"),
-        request.args.get("tag"),
-    )
-
-
-@article.route("/untag", methods=["GET"])
-@jwt_required()
-@swag_from("./docs/untag.yml", endpoint="article.untag_article", methods=["GET"])
-def untag_article():
-    """Untag an article."""
-    return handle_untag(
-        request.args.get("article id"),
-        request.args.get("author id"),
-        request.args.get("tag"),
-    )
 
 
 @article.route("/report", methods=["POST"])

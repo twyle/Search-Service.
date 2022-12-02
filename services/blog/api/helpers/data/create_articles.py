@@ -1,21 +1,21 @@
-import csv
 import json
 
-with open('Articles.csv', errors='ignore') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
+def create_articles():
     articles = []
-    for row in csv_reader:
-        if line_count == 0:
-            line_count += 1
-        else:
-            article = {
-                'title': row[2],
-                'text': row[0],
-                'date': row[1],
-                'tags': [row[3]]
-            }
+    with open('News_Category_Dataset_v3.json', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            article = {}
+            data = json.loads(line)
+            article['title'] = data['headline']
+            article['category'] = data['category'].lower()
+            article['text'] = data['short_description']
+            article['date'] = data['date']
+            
             articles.append(article)
-            line_count += 1
+
     with open('articles.json', 'w', encoding='utf-8') as f:
         json.dump(articles, f, ensure_ascii=False, indent=4)
+    
+if __name__ == '__main__':
+    create_articles()

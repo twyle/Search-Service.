@@ -22,7 +22,7 @@ class Article(db.Model):
     image: str = db.Column(db.String(100), nullable=True)
     date_published: datetime = db.Column(db.DateTime, default=datetime.utcnow)
     date_edited: datetime = db.Column(db.DateTime, nullable=True)
-    tags = db.Column(ARRAY(db.String(100)), default=["tech"])
+    tag = db.Column(db.String(100), nullable=True)
 
     author = db.relationship("Author", backref="articles_published")
 
@@ -90,7 +90,7 @@ class ArticleSchema(ma.Schema):
     class Meta:
         """The fields to display."""
 
-        fields = ("id", "author_id", "title", "text", "image", "date_published", "date_edited", "tags")
+        fields = ("id", "author_id", "title", "text", "image", "date_published", "date_edited", "tag")
         
 
 class ESSchema(ma.Schema):
@@ -99,7 +99,8 @@ class ESSchema(ma.Schema):
     class Meta:
         """The fields to display."""
 
-        fields = ("id", "author_id", "title", "text", "date_published", "date_edited", "tags")
+        fields = ("id", "author_id", "title", "text", "date_published", 
+                  "date_edited", "tag", "bookmarks", "comments", "likes", "views")
 
 
 article_schema = ArticleSchema()

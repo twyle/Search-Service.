@@ -3,7 +3,11 @@
 from flasgger import swag_from
 from flask import Blueprint, request, jsonify
 from .controller import (
-    handle_search_all_articles
+    handle_search_all_articles,
+    handle_search_own_articles,
+    handle_search_bookmarked_articles,
+    handle_search_viewed_articles,
+    handle_search_liked_articles
 )
 
 search = Blueprint("search", __name__)
@@ -14,9 +18,8 @@ search = Blueprint("search", __name__)
     "./docs/search.yml", endpoint="search.search_own_articles", methods=["POST"]
 )
 def search_own_articles():
-    """Register an author."""
-    # return handle_search_own_articles(request.args.get("id"), request.json)
-    return jsonify({'success': 'serach all articles'})
+    """Register an author.""" 
+    return handle_search_own_articles(request.args.get("author id"), request.json)
 
 @search.route("/search_all_articles", methods=["POST"])
 @swag_from(
@@ -33,8 +36,7 @@ def search_all_articles():
 )
 def search_articles_read():
     """Search articles read."""
-    # return handle_search_articles_read(request.args.get("id"), request.json)
-    return jsonify({'success': 'search articles read'})
+    return handle_search_viewed_articles(request.args.get("author id"), request.json)
 
 
 @search.route("/search_articles_bookmarked", methods=["POST"])
@@ -43,8 +45,7 @@ def search_articles_read():
 )
 def search_articles_bookmarked():
     """Search articles bookmarekd."""
-    # return handle_search_articles_bookmarked(request.args.get("id"), request.json)
-    return jsonify({'success': 'search articles bookmarked'})
+    return handle_search_bookmarked_articles(request.args.get("author id"), request.json)
 
 
 @search.route("/search_articles_author_follows", methods=["POST"])
@@ -83,8 +84,7 @@ def search_articles_with_tags():
 )
 def search_articles_liked():
     """Search articles bookmarekd."""
-    # return handle_search_articles_liked(request.args.get("id"), request.json)
-    return jsonify({'success': 'search articles bookmarked'})
+    return handle_search_liked_articles(request.args.get("author id"), request.json)
 
 
 @search.route("/search_articles_commented", methods=["POST"])

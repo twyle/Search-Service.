@@ -21,6 +21,11 @@ parameters:
     required: true
     in: "formData"
     type: string
+  - name: "Tag"
+    description: "Articles Tag"
+    required: true
+    in: "formData"
+    type: string
   - name: "Image"
     description: "Articles Image"
     required: false
