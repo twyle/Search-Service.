@@ -79,4 +79,4 @@ def create_logger(env="development"):
 
 
 app_logger = create_logger()
-app_logger.addHandler(logstash.TCPLogstashHandler(os.environ['LOGGER_HOST'], os.environ['LOGGER_PORT'], version=1))
+# app_logger.addHandler(logstash.TCPLogstashHandler(os.environ['LOGGER_HOST'], os.environ['LOGGER_PORT'], version=1))

@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
 from elasticsearch import Elasticsearch
+import boto3
 
 
 load_dotenv()
@@ -21,15 +22,31 @@ ma = Marshmallow()
 cors = CORS()
 jwt = JWTManager()
 
-ES_HOST = os.environ["ES_HOST"]
-ES_PORT = os.environ['ES_PORT']
-es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
-
 s3 = boto3.client(
     "s3",
     aws_access_key_id=os.environ["AWS_ACCESS_KEY"],
     aws_secret_access_key=os.environ["AWS_ACCESS_SECRET"],
 )
+
+def create_es_client():
+    """Create the es client."""
+    if os.environ['FLASK_ENV'] == 'development':
+        ES_HOST = os.environ["ES_HOST"]
+        ES_PORT = os.environ['ES_PORT']
+
+        es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
+        return es
+    elif os.environ['FLASK_ENV'] in ['production', 'staging']:
+        CLOUD_ID = os.environ['ES_CLOUD_ID']
+        ES_USER = os.environ['ES_USER']
+        ES_PASSWORD = os.environ['ES_PASSWORD']
+        es = Elasticsearch(
+            cloud_id=CLOUD_ID,
+            basic_auth=(ES_USER, ES_PASSWORD)
+        )
+        return es
+
+es = create_es_client()
 
 def make_celery():
     """Create the celery extension."""

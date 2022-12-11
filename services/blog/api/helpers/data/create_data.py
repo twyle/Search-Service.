@@ -1,6 +1,43 @@
 import json
 import random
 from faker import Faker
+from ...extensions.extensions import es
+
+
+def create_index(index_name: str):
+    """Create the ES index"""
+    mapping = {
+    "settings": {
+        "number_of_shards": 2,
+        "number_of_replicas": 1
+    },
+    "mappings": {
+        "properties": {
+            "title": {
+                "type": "text" 
+            },
+            "text": {
+                "type": "text"
+            },
+            "category": {
+                "type": "text",
+                "fields": {
+                    "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "date": {
+                "type": "date",
+                "format":"yyyy-MM-dd"
+            }
+        }
+    }
+    }
+
+    print("creating 'example_index' index...")
+    es.indices.create(index = index_name, body = mapping)
 
 
 def load_authors(file_path):

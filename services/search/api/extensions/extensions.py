@@ -15,10 +15,26 @@ cors = CORS()
 jwt = JWTManager()
 db = SQLAlchemy()
 ma = Marshmallow()
-ES_HOST = os.environ["ES_HOST"]
-ES_PORT = os.environ['ES_PORT']
 
-es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
+
+def create_es_client():
+    """Create the es client."""
+    if os.environ['FLASK_ENV'] == 'development':
+        ES_HOST = os.environ["ES_HOST"]
+        ES_PORT = os.environ['ES_PORT']
+        es = Elasticsearch(hosts=[f"{ES_HOST}:{ES_PORT}"])
+        return es
+    elif os.environ['FLASK_ENV'] in ['production', 'staging']:
+        CLOUD_ID = os.environ['ES_CLOUD_ID']
+        ES_USER = os.environ['ES_USER']
+        ES_PASSWORD = os.environ['ES_PASSWORD']
+        es = Elasticsearch(
+            cloud_id=CLOUD_ID,
+            basic_auth=(ES_USER, ES_PASSWORD)
+        )
+        return es
+
+es = create_es_client()
 
 swagger_template = {
     "swagger": "2.0",

@@ -37,17 +37,27 @@ start-db-containers:
 stop-db-containers:
 	@sudo docker-compose -f sdatabase/docker-compose.yml down -v
 
-create-db:
-	@python manage.py create_db
-
-seed-db:
-	@python manage.py seed_db
-
 test-local:
 	@curl localhost
 
+build-blog-service:
+	@docker build -f services/blog/Dockerfile.dev -t blog-service:latest ./services/blog/
+
+build-search-service:
+	@docker build -f services/search/Dockerfile.dev -t search-service:latest ./services/search/
+
 build:
-	@docker build -t blog-service:latest .
+	@docker build -f services/blog/Dockerfile.dev -t blog-service:latest ./services/blog/
+	@docker build -f services/search/Dockerfile.dev -t search-service:latest ./services/search/
+
+tag:
+	@docker tag search-service:latest lyleokoth/search-service:latest
+	@docker tag blog-service:latest lyleokoth/blog-service:latest
+
+push:
+	@docker login
+	@docker push lyleokoth/search-service:latest
+	@docker push lyleokoth/blog-service:latest
 
 run-dev:
 	@docker run -p5000:5000 --env-file=./.env blog-service:latest

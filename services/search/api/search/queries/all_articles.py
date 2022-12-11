@@ -44,7 +44,7 @@ def all_articles(query: str) -> List[str]:
             }
         }
         }
-    resp = es.search(index="articles", body=payload, size=MAX_SIZE)
+    resp = es.search(index=os.environ['ES_INDEX'], body=payload, size=MAX_SIZE)
     return [result['_source'] for result in resp['hits']['hits']]
     
     

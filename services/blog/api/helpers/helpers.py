@@ -80,3 +80,21 @@ def check_configuration():
     # Check database connection
     if not check_if_database_exists(create_db_conn_string()):
         raise ValueError("The database is not connected!")
+    
+
+def create_article_index(es, index_name='articles'):
+    body = {
+        "mappings":{
+            "properties": {
+                "title": {"type": "text", "analyzer": "english"},
+                "ethnicity": {"type": "text", "analyzer": "standard"},
+                "director": {"type": "text", "analyzer": "standard"},
+                "cast": {"type": "text", "analyzer": "standard"},
+                "genre": {"type": "text", "analyzer": "standard"},
+                "plot": {"type": "text", "analyzer": "english"},
+                "year": {"type": "integer"},
+                "wiki_page": {"type": "keyword"}
+            }
+        }
+    }
+    response = es.indices.create(index_name, body=body)

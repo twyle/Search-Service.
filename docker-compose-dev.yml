@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  nginx:
+    build: ./services/nginx
+    ports:
+      - 80:80
+    depends_on:
+      - blog
+      - search
+
   db:
     image: postgres
     volumes:
@@ -16,8 +24,8 @@ services:
       dockerfile: Dockerfile.dev
     volumes:
       - .:/usr/src/app
-    ports:
-      - 5000:5000
+    expose:
+      - 5000
     env_file:
       - ./services/blog/.env
     depends_on:

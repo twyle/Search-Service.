@@ -6,7 +6,7 @@ from ..search.views import search
 from elasticsearch import Elasticsearch
 from elastic_transport import ConnectionError
 
-from ..extensions import cors, jwt, swagger, db, ma
+from ..extensions import cors, jwt, swagger, db, ma, es
 from ..config.logger import app_logger
 import requests
 
@@ -36,10 +36,13 @@ def create_db_conn_string() -> str:
         The database connection string
     """
 
-    ES_HOST = os.environ["ES_HOST"]
-    ES_PORT = os.environ['ES_PORT']
+    POSTGRES_HOST = os.environ["POSTGRES_HOST"]
+    POSTGRES_PORT = os.environ["POSTGRES_PORT"]
+    POSTGRES_USER = os.environ["POSTGRES_USER"]
+    POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+    POSTGRES_DB = os.environ["POSTGRES_DB"]
 
-    return f"{ES_HOST}:{ES_PORT}"
+    return f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 
 
 def check_if_database_exists(db_connection_string: str) -> bool:
@@ -68,8 +71,10 @@ def check_if_database_exists(db_connection_string: str) -> bool:
     if not isinstance(db_connection_string, str):
         raise ValueError("The db_connection_string has to be string")
     
+    if not database_exists(db_connection_string):
+        raise ValueError("The Postgres database is not connected")
+    
     try:  
-        es = Elasticsearch(hosts=[db_connection_string])
         es.info()
     except Exception as e:
         app_logger.critical('Could not connect to ES cluster!')
