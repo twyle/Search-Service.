@@ -103,13 +103,6 @@ Here is how to set up the application locally:
         POSTGRES_DB=lyle
         POSTGRES_PORT=5432
 
-        MAIL_USERNAME=<mail-user-name>
-        MAIL_PASSWORD=<mail-password>
-        MAIL_SERVER=<mail-server>
-        MAIL_PORT=465
-        MAIL_USE_SSL=True
-        MAIL_DEFAULT_SENDER=<default-email>
-
         S3_BUCKET=<s3-bucket-name>
         AWS_ACCESS_KEY=<aws-access-key>
         AWS_ACCESS_SECRET=<aws-secret-key>
@@ -136,17 +129,6 @@ Here is how to set up the application locally:
         POSTGRES_PASSWORD=lyle
         POSTGRES_DB=lyle
         POSTGRES_PORT=5432
-
-        MAIL_USERNAME=<mail-user-name>
-        MAIL_PASSWORD=<mail-password>
-        MAIL_SERVER=<mail-server>
-        MAIL_PORT=465
-        MAIL_USE_SSL=True
-        MAIL_DEFAULT_SENDER=<default-email>
-
-        S3_BUCKET=<s3-bucket-name>
-        AWS_ACCESS_KEY=<aws-access-key>
-        AWS_ACCESS_SECRET=<aws-secret-key>
 
       ```
 
